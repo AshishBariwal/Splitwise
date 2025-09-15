@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splitwise - Expense Sharing Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-calculator"></i> Splitwise</h1>
+                <button class="menu-btn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-item" id="sidebarFriends">
+                    <i class="fas fa-users"></i>
+                    <span>Friends</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-receipt"></i>
+                    <span>Expenses</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Balances</span>
+                </div>
+                <div class="sidebar-section" id="sidebarFriendsList" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Intro Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            <span class="gradient-text">Split Expenses</span>
+                            <br>Like a Pro!
+                        </h1>
+                        <p class="hero-subtitle">
+                            Track shared expenses, split bills, and settle debts with friends effortlessly. 
+                            No more awkward money conversations!
+                        </p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-users"></i>
+                                <span class="addfriend">Add Friends</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-receipt"></i>
+                                <span>Track Expenses</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-calculator"></i>
+                                <span>Auto Calculate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="floating-card card-1">
+                            <i class="fas fa-credit-card"></i>
+                            <span>₹1,200</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-users"></i>
+                            <span id="heroFriendsCount">3 Friends</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Settled!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="card friends-card">
+                    <div class="card-header">
+                        <i class="fas fa-users" style="color: #2196f3;"></i>
+                        <h3>Number of Friends</h3>
+                    </div>
+                    <div class="card-amount friends-count"><span id="friendsCount">3</span></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-credit-card" style="color: #ff9800;"></i>
+                        <h3><span id="expensesCount"></span> Expenses</h3>
+                    </div>
+                    <div class="card-amount"><span id="totalAmount">₹13,770.00</span></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line" style="color: #4caf50;"></i>
+                        <h3>Settlements</h3>
+                    </div>
+                    <div class="card-amount" style="color: #4caf50;"><span id="settlementsCount">1</span></div>
+                </div>
+            </div>
+
+            <!-- Balances Section -->
+            <div class="section">
+                <h2>Balances</h2>
+                <div class="balances-grid" id="balancesGrid">
+                    <!-- Balances will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Settlements Section -->
+            <div class="section" id="settlementsSection" style="display: none;">
+                <h2>Who Owes What to Whom</h2>
+                <div class="settlements-list" id="settlementsList">
+                    <!-- Settlements will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Recent Expenses -->
+            <div class="section">
+                <h2>Recent Expenses</h2>
+                <div class="expenses-list" id="expensesList">
+                    <!-- Expenses will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="showAddExpenseModal()">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div class="modal" id="addExpenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Expense</h2>
+                <button class="close-btn" onclick="closeModal('addExpenseModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="expenseDescription">Description</label>
+                    <input type="text" id="expenseDescription" placeholder="e.g., Dinner at Restaurant">
+                </div>
+                <div class="form-group">
+                    <label for="expenseAmount">Amount (₹)</label>
+                    <input type="number" id="expenseAmount" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                </div>
+                <div class="form-group">
+                    <label for="expensePaidBy">Paid by</label>
+                    <select id="expensePaidBy">
+                        <option value="">Select who paid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Split between:</label>
+                    <div class="split-options" id="splitOptions">
+                        <!-- Split options will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addExpenseModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+    <div class="modal" id="addFriendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Friend</h2>
+                <button class="close-btn" onclick="closeModal('addFriendModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="friendName">Name</label>
+                    <input type="text" id="friendName" placeholder="Enter friend's name">
+                </div>
+                <div class="form-group">
+                    <label for="friendEmail">Email</label>
+                    <input type="email" id="friendEmail" placeholder="Enter friend's email">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addFriendModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="addFriend()">Add Friend</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Friend Modal -->
+    <div class="modal" id="removeFriendModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Remove Friend</h2>
+                <button class="close-btn" onclick="closeModal('removeFriendModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <i class="fas fa-exclamation-triangle" style="color: #ff9800; font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Are you sure you want to remove <strong id="friendToRemoveName"></strong> from the group?</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">
+                        This will:
+                    </p>
+                    <ul style="color: #666; font-size: 0.9rem; margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Remove them from all future expenses</li>
+                        <li>Keep their historical expense data</li>
+                        <li>Recalculate all balances</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('removeFriendModal')">Cancel</button>
+                <button class="btn btn-danger" onclick="removeFriend()">Remove Friend</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
